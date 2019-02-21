@@ -8,10 +8,7 @@ public class ProduitGratuitException extends Exception{
 
 	private static final long serialVersionUID = -190178348184495549L;
 
-	public ProduitGratuitException() {
-		super();
-		System.out.println("Promotion - ce produit est gratuit !");
-		
-		
+	public ProduitGratuitException(String s) {
+		super(s);
 	}
 }

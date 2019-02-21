@@ -84,8 +84,9 @@ public class ProductController {
     //ajouter un produit
     @PostMapping(value = "/Produits")
 
-    public ResponseEntity<Void> ajouterProduit(@Valid @RequestBody Product product) {
+    public ResponseEntity<Void> ajouterProduit(@Valid @RequestBody Product product) throws ProduitGratuitException {
 
+    	
         Product productAdded =  productDao.save(product);
 
         if (productAdded == null)
@@ -96,7 +97,7 @@ public class ProductController {
                 .path("/{id}")
                 .buildAndExpand(productAdded.getId())
                 .toUri();
-
+        testPrix(product);
         return ResponseEntity.created(location).build();
     }
 
@@ -144,7 +145,7 @@ public class ProductController {
     }
     
     private void testPrix(Product product) throws ProduitGratuitException {
-        if(product.getPrix() == 0) throw new ProduitGratuitException();
+        if(product.getPrix() == 0) throw new ProduitGratuitException("Promotion - ce produit est gratuit !");
     }
 
 }
