@@ -8,7 +8,6 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,7 +32,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 
-@Api( description="API pour es opérations CRUD sur les produits.")
+@Api(value="API pour es opérations CRUD sur les produits.")
 
 @RestController
 public class ProductController {
@@ -112,18 +111,16 @@ public class ProductController {
     // Calcul de la marge d'un produit
     @GetMapping(value="/AdminProduits")
     public MappingJacksonValue calculerMargeProduit() {
-    	List<Product> liste = new ArrayList<Product>();
     	Integer marge;
-    	HashMap <List, Integer> detailedProducts = new HashMap<List, Integer>();
-    	liste = productDao.findAll();
+    	HashMap <List, Integer> detailedProducts = new HashMap<>();
+    	List<Product> liste = productDao.findAll();
     	for(Product product : liste) {
         	List detailedProduct = new ArrayList<>();
     		marge =  product.getPrix() - product.getPrixAchat();
         	detailedProduct.add(product.getId() + " " + product.getNom() + " " + product.getPrix());
     		detailedProducts.put(detailedProduct, marge);
     	}
-    	MappingJacksonValue produitsFiltres = new MappingJacksonValue(detailedProducts);
-    	return produitsFiltres;
+    	return new MappingJacksonValue(detailedProducts);
     }
 
     //Pour les tests
@@ -133,6 +130,10 @@ public class ProductController {
         return productDao.chercherUnProduitCher(400);
     }
 
+    @GetMapping(value="/ProduitsTries")
+    public List <Product> trierProduitsParOrdreAlphabetique() {
+    	return productDao.findAllByOrderByNomAsc();
+    }
     
 
 }
