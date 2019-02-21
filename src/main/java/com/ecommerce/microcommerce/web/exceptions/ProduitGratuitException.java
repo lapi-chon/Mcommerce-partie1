@@ -12,5 +12,6 @@ public class ProduitGratuitException extends Exception{
 		super();
 		System.out.println("Promotion - ce produit est gratuit !");
 		
+		
 	}
 }
