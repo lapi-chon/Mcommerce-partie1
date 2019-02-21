@@ -1,14 +1,13 @@
 package com.ecommerce.microcommerce.model;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import org.hibernate.validator.constraints.Length;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.validation.constraints.Min;
+
+import org.hibernate.validator.constraints.Length;
+
+import com.ecommerce.microcommerce.web.exceptions.ProduitGratuitException;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 //@JsonFilter("monFiltreDynamique")
@@ -21,7 +20,7 @@ public class Product {
     @Length(min=3, max=20, message = "Nom trop long ou trop court. Et oui messages sont plus stylés que ceux de Spring")
     private String nom;
 
-    @Min(value = 1)
+    //@Min(value = 1)
     private int prix;
 
     //information que nous ne souhaitons pas exposer
@@ -37,8 +36,7 @@ public class Product {
         this.id = id;
         this.nom = nom;
         this.prix = prix;
-        this.prixAchat = prixAchat;
-        
+        this.prixAchat = prixAchat;  
     }
 
     public int getId() {
@@ -63,6 +61,7 @@ public class Product {
 
     public void setPrix(int prix) {
         this.prix = prix;
+
     }
 
     public int getPrixAchat() {

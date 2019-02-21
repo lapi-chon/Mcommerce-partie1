@@ -23,6 +23,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.ecommerce.microcommerce.dao.ProductDao;
 import com.ecommerce.microcommerce.model.Product;
+import com.ecommerce.microcommerce.web.exceptions.ProduitGratuitException;
 import com.ecommerce.microcommerce.web.exceptions.ProduitIntrouvableException;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
@@ -65,11 +66,16 @@ public class ProductController {
     @ApiOperation(value = "Récupère un produit grâce à son ID à condition que celui-ci soit en stock!")
     @GetMapping(value = "/Produits/{id}")
 
-    public Product afficherUnProduit(@PathVariable int id) {
+    public Product afficherUnProduit(@PathVariable int id){
 
         Product produit = productDao.findById(id);
 
         if(produit==null) throw new ProduitIntrouvableException("Le produit avec l'id " + id + " est INTROUVABLE. Écran Bleu si je pouvais.");
+        try {
+			testPrix(produit) ;
+		} catch (ProduitGratuitException e) {
+
+		}
 
         return produit;
     }
@@ -108,20 +114,25 @@ public class ProductController {
         productDao.save(product);
     }
 
-    // Calcul de la marge d'un produit
-    @GetMapping(value="/AdminProduits")
-    public MappingJacksonValue calculerMargeProduit() {
-    	Integer marge;
-    	HashMap <List, Integer> detailedProducts = new HashMap<>();
-    	List<Product> liste = productDao.findAll();
-    	for(Product product : liste) {
-        	List detailedProduct = new ArrayList<>();
-    		marge =  product.getPrix() - product.getPrixAchat();
-        	detailedProduct.add(product.getId() + " " + product.getNom() + " " + product.getPrix());
-    		detailedProducts.put(detailedProduct, marge);
-    	}
-    	return new MappingJacksonValue(detailedProducts);
-    }
+	// Calcul de la marge d'un produit
+	@GetMapping(value = "/AdminProduits")
+	public MappingJacksonValue calculerMargeProduit() {
+		Integer marge;
+		HashMap<List, Integer> detailedProducts = new HashMap<>();
+		List<Product> liste = productDao.findAll();
+		for (Product product : liste) {
+			List p = new ArrayList<>();
+			marge = product.getPrix() - product.getPrixAchat();
+			p.add(product.getId() + " " + product.getNom() + " " + product.getPrix());
+			detailedProducts.put(p, marge);
+			try {
+				testPrix(product);
+			} catch (ProduitGratuitException e) {
+
+			}
+		}
+		return new MappingJacksonValue(detailedProducts);
+	}
 
     //Pour les tests
     @GetMapping(value = "test/produits/{prix}")
@@ -132,8 +143,12 @@ public class ProductController {
 
     @GetMapping(value="/ProduitsTries")
     public List <Product> trierProduitsParOrdreAlphabetique() {
+    	
     	return productDao.findAllByOrderByNomAsc();
     }
     
+    private void testPrix(Product product) throws ProduitGratuitException {
+        if(product.getPrix() == 0) throw new ProduitGratuitException();
+    }
 
 }
