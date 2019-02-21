@@ -73,9 +73,7 @@ public class ProductController {
         if(produit==null) throw new ProduitIntrouvableException("Le produit avec l'id " + id + " est INTROUVABLE. Écran Bleu si je pouvais.");
         try {
 			testPrix(produit) ;
-		} catch (ProduitGratuitException e) {
-
-		}
+		} catch (ProduitGratuitException e) {}
 
         return produit;
     }
@@ -127,9 +125,7 @@ public class ProductController {
 			detailedProducts.put(p, marge);
 			try {
 				testPrix(product);
-			} catch (ProduitGratuitException e) {
-
-			}
+			} catch (ProduitGratuitException e) {}
 		}
 		return new MappingJacksonValue(detailedProducts);
 	}

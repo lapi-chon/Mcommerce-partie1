@@ -6,7 +6,6 @@ import javax.persistence.Id;
 
 import org.hibernate.validator.constraints.Length;
 
-import com.ecommerce.microcommerce.web.exceptions.ProduitGratuitException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
